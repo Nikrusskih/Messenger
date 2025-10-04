@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Messenger</string>
+    <string name="messenger">Messenger</string>
+    <string name="your_email">Your email:</string>
+    <string name="your_password">your_password:</string>
+    <string name="login">LOGIN</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="register">Register</string>
+</resources>
