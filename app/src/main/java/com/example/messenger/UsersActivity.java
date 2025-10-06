@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -14,20 +13,30 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
+import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.auth.FirebaseUser;
+import java.util.List;
 
 public class UsersActivity extends AppCompatActivity {
 
     private UsersViewModel viewModel;
+    private RecyclerView recyclerView;
+    private UsersAdapter usersAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_users);
+        initViews();
         viewModel = new ViewModelProvider(this).get(UsersViewModel.class);
         observeViewModel();
+    }
+
+    private void initViews() {
+        recyclerView = findViewById(R.id.recycleViewUsers);
+        usersAdapter = new UsersAdapter();
+        recyclerView.setAdapter(usersAdapter);
     }
 
     private void observeViewModel() {
@@ -39,6 +48,12 @@ public class UsersActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 }
+            }
+        });
+        viewModel.getUsers().observe(this, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                usersAdapter.setUsers(users);
             }
         });
     }
