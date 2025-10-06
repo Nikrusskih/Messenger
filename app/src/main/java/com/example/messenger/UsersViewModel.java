@@ -19,6 +19,8 @@ import java.util.List;
 public class UsersViewModel extends ViewModel {
 
     private final FirebaseAuth auth;
+    private FirebaseDatabase database;
+    private DatabaseReference usersReference;
     private final MutableLiveData<FirebaseUser> user = new MutableLiveData<>();
     private final MutableLiveData<List<User>> users = new MutableLiveData<>();
 
@@ -39,8 +41,8 @@ public class UsersViewModel extends ViewModel {
                 user.setValue(firebaseAuth.getCurrentUser());
             }
         });
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference usersReference = database.getReference("Users");
+        database = FirebaseDatabase.getInstance();
+        usersReference = database.getReference("Users");
         usersReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -68,7 +70,17 @@ public class UsersViewModel extends ViewModel {
         });
     }
 
+
+    public void setUserOnline(boolean isOnline) {
+        FirebaseUser firebaseUser = auth.getCurrentUser();
+        if (firebaseUser==null){
+            return;
+        }
+        usersReference.child(firebaseUser.getUid()).child("online").setValue(isOnline);
+    }
+
     public void logOut() {
+        setUserOnline(false);
         auth.signOut();
     }
 }
